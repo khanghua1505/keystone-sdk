@@ -20,7 +20,7 @@ TEST_BIN_DIR = test_binary
 
 CCFLAGS = -I$(SDK_INCLUDE_HOST_DIR) -I$(SDK_INCLUDE_EDGE_DIR) -I$(SDK_INCLUDE_VERIFIER_DIR) -std=c++11
 LDFLAGS = -L$(SDK_LIB_DIR)
-GFLAGS = -lgtest
+GFLAGS = -lgtest  -lpthread
 TARGET = test_runner
 
 all: 
