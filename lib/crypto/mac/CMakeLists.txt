@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(crypto-mac C ASM)
-
-set(CFLAGS      "-Wall -Werror")
-set(LDFLAGS     "-static")
+include(${src_dir}/macros.cmake)
 
 set(SOURCE_FILES 
         blake2/blake2bmac_file.c
@@ -54,7 +51,8 @@ set(SOURCE_FILES
         xcbc/xcbc_process.c
     )
 
-set(CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${CFLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LDFLAGS}")
-
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+foreach(filename ${SOURCE_FILES})
+    list(APPEND _SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/${filename})
+endforeach()
+    
+global_set(MODULES_SOURCE_FILES "${MODULES_SOURCE_FILES};${_SOURCE_FILES}")

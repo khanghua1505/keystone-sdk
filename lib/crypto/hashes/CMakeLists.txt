@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(crypto-hashes C ASM)
-
-set(CFLAGS      "-Wall -Werror")
-set(LDFLAGS     "-static")
+include(${src_dir}/macros.cmake)
 
 set(SOURCE_FILES 
         blake2b.c
@@ -33,7 +30,8 @@ set(SOURCE_FILES
         whirl/whirltab.c
     )
 
-set(CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${CFLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LDFLAGS}")
-
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+foreach(filename ${SOURCE_FILES})
+    list(APPEND _SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/${filename})
+endforeach()
+    
+global_set(MODULES_SOURCE_FILES "${MODULES_SOURCE_FILES};${_SOURCE_FILES}")

@@ -11,13 +11,14 @@ set(LDFLAGS     "-static -nostdlib")
 
 global_set(CMAKE_C_FLAGS           "${CMAKE_C_FLAGS} ${CFLAGS}")
 global_set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${LDFLAGS}")
+global_set(CMAKE_C_ARCHIVE_CREATE "<CMAKE_AR> rcs <TARGET> <LINK_FLAGS> <OBJECTS>")
+
 
 set(libmodules              
         ciphers 
         encauth 
         hashes 
         mac 
-        math 
         misc 
         modes 
         pk 
@@ -25,8 +26,16 @@ set(libmodules
         stream
     )
     
-set(enabled_libmodules      
-        pk
+set(enabled_libmodules 
+        ciphers 
+        encauth 
+        hashes 
+        mac 
+        misc 
+        modes 
+        pk 
+        prngs 
+        stream
     )
 
 include_directories(headers)
@@ -36,6 +45,8 @@ foreach(module ${enabled_libmodules})
 endforeach()
 
 add_library(${PROJECT_NAME} ${MODULES_SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} "../math/libtfm.a")
+
 target_include_directories(${PROJECT_NAME} PUBLIC headers)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${out_dir})
