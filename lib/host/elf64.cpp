@@ -78,16 +78,20 @@
  * The construction, validity and performance of this licence is governed
  * by the laws in force in New South Wales, Australia.
  */
-#include <elf.h>
-#include <elf32.h>
+#include <keystone/host/elf.h>
+#include <keystone/host/elf64.h>
 #include <inttypes.h>
 #include <string.h>
 
 /* ELF header functions */
 int
-elf32_checkFile(elf_t *elf)
+elf64_checkFile(elf_t *elf)
 {
-    if (elf->elfSize < sizeof(Elf32_Ehdr)) {
+    if (sizeof(uintptr_t) != sizeof(uint64_t)) {
+        return -1; /* not supported on 32-bit architecture */
+    }
+
+    if (elf->elfSize < sizeof(Elf64_Ehdr)) {
         return -1; /* file smaller than ELF header */
     }
 
@@ -95,16 +99,16 @@ elf32_checkFile(elf_t *elf)
         return -1; /* not an ELF file */
     }
 
-    Elf32_Ehdr *header = (Elf32_Ehdr*) elf->elfFile;
-    if (header->e_ident[EI_CLASS] != ELFCLASS32) {
-        return -1; /* not a 32-bit ELF */
+    Elf64_Ehdr *header = (Elf64_Ehdr*) elf->elfFile;
+    if (header->e_ident[EI_CLASS] != ELFCLASS64) {
+        return -1; /* not a 64-bit ELF */
     }
 
-    if (header->e_phentsize != sizeof(Elf32_Phdr)) {
+    if (header->e_phentsize != sizeof(Elf64_Phdr)) {
         return -1; /* unexpected program header size */
     }
 
-    if (header->e_shentsize != sizeof(Elf32_Shdr)) {
+    if (header->e_shentsize != sizeof(Elf64_Shdr)) {
         return -1; /* unexpected section header size */
     }
 
@@ -117,9 +121,9 @@ elf32_checkFile(elf_t *elf)
 }
 
 int
-elf32_checkProgramHeaderTable(elf_t *elf)
+elf64_checkProgramHeaderTable(elf_t *elf)
 {
-    Elf32_Ehdr *header = (Elf32_Ehdr*) elf->elfFile;
+    Elf64_Ehdr *header = (Elf64_Ehdr*) elf->elfFile;
     size_t ph_end = header->e_phoff + header->e_phentsize * header->e_phnum;
     if (elf->elfSize < ph_end || ph_end < header->e_phoff) {
         return -1; /* invalid program header table */
@@ -129,9 +133,9 @@ elf32_checkProgramHeaderTable(elf_t *elf)
 }
 
 int
-elf32_checkSectionTable(elf_t *elf)
+elf64_checkSectionTable(elf_t *elf)
 {
-    Elf32_Ehdr *header = (Elf32_Ehdr*) elf->elfFile;
+    Elf64_Ehdr *header = (Elf64_Ehdr*) elf->elfFile;
     size_t sh_end = header->e_shoff + header->e_shentsize * header->e_shnum;
     if (elf->elfSize < sh_end || sh_end < header->e_shoff) {
         return -1; /* invalid section header table */

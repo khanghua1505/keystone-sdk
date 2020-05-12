@@ -8,6 +8,7 @@ set(LDFLAGS     "-static")
 set(SOURCE_FILES 
         malloc.c
         string.c
+        printf.c
         internal/tinyprintf.c)
 
 set(CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${CFLAGS}")

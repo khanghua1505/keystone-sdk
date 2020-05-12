@@ -2,8 +2,8 @@
 // Copyright (c) 2018, The Regents of the University of California (Regents).
 // All Rights Reserved. See LICENSE for license details.
 //------------------------------------------------------------------------------
-#include <edge_call.h>
-#include "string.h"
+#include <keystone/edge/edge_call.h>
+#include <keystone/glibc/string.h>
 
 uintptr_t _shared_start;
 size_t _shared_len;

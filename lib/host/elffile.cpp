@@ -2,12 +2,11 @@
 // Copyright (c) 2018, The Regents of the University of California (Regents).
 // All Rights Reserved. See LICENSE for license details.
 //------------------------------------------------------------------------------
-#include "elffile.h"
+#include "keystone/host/elffile.h"
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <cstdio>
-#include "common.h"
-#include "elffile.h"
+#include "keystone/host/common.h"
 
 static size_t fstatFileSize(int filep)
 {

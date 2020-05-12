@@ -78,173 +78,64 @@
  * The construction, validity and performance of this licence is governed
  * by the laws in force in New South Wales, Australia.
  */
-#pragma once
-
-#include <stdint.h>
-#include <elf.h>
+#include <keystone/host/elf.h>
+#include <keystone/host/elf32.h>
+#include <inttypes.h>
+#include <string.h>
 
 /* ELF header functions */
-int elf64_checkFile(elf_t *elf);
-
-int elf64_checkProgramHeaderTable(elf_t *elf);
-
-int elf64_checkSectionTable(elf_t *elf);
-
-static inline bool
-elf_isElf64(elf_t *elf)
+int
+elf32_checkFile(elf_t *elf)
 {
-    return elf->elfClass == ELFCLASS64;
+    if (elf->elfSize < sizeof(Elf32_Ehdr)) {
+        return -1; /* file smaller than ELF header */
+    }
+
+    if (elf_check_magic((char*)elf->elfFile) < 0) {
+        return -1; /* not an ELF file */
+    }
+
+    Elf32_Ehdr *header = (Elf32_Ehdr*) elf->elfFile;
+    if (header->e_ident[EI_CLASS] != ELFCLASS32) {
+        return -1; /* not a 32-bit ELF */
+    }
+
+    if (header->e_phentsize != sizeof(Elf32_Phdr)) {
+        return -1; /* unexpected program header size */
+    }
+
+    if (header->e_shentsize != sizeof(Elf32_Shdr)) {
+        return -1; /* unexpected section header size */
+    }
+
+    if (header->e_shstrndx >= header->e_shnum) {
+        return -1; /* invalid section header string table section */
+    }
+
+    elf->elfClass = header->e_ident[EI_CLASS];
+    return 0; /* elf header looks OK */
 }
 
-static inline Elf64_Ehdr
-elf64_getHeader(elf_t *elf)
+int
+elf32_checkProgramHeaderTable(elf_t *elf)
 {
-    return *(Elf64_Ehdr *) elf->elfFile;
+    Elf32_Ehdr *header = (Elf32_Ehdr*) elf->elfFile;
+    size_t ph_end = header->e_phoff + header->e_phentsize * header->e_phnum;
+    if (elf->elfSize < ph_end || ph_end < header->e_phoff) {
+        return -1; /* invalid program header table */
+    }
+
+    return 0;
 }
 
-static inline uintptr_t
-elf64_getEntryPoint(elf_t *file)
+int
+elf32_checkSectionTable(elf_t *elf)
 {
-    return elf64_getHeader(file).e_entry;
-}
+    Elf32_Ehdr *header = (Elf32_Ehdr*) elf->elfFile;
+    size_t sh_end = header->e_shoff + header->e_shentsize * header->e_shnum;
+    if (elf->elfSize < sh_end || sh_end < header->e_shoff) {
+        return -1; /* invalid section header table */
+    }
 
-static inline Elf64_Phdr *
-elf64_getProgramHeaderTable(elf_t *file)
-{
-    return (Elf64_Phdr*) ((uint8_t*) file->elfFile + elf64_getHeader(file).e_phoff);
-}
-
-static inline Elf64_Shdr *
-elf64_getSectionTable(elf_t *file)
-{
-    return (Elf64_Shdr*) ((uint8_t*) file->elfFile + elf64_getHeader(file).e_shoff);
-}
-
-static inline size_t
-elf64_getNumProgramHeaders(elf_t *file)
-{
-    return elf64_getHeader(file).e_phnum;
-}
-
-static inline size_t
-elf64_getNumSections(elf_t *elf) {
-    return elf64_getHeader(elf).e_shnum;
-}
-
-static inline size_t
-elf64_getSectionStringTableIndex(elf_t *elf)
-{
-    return elf64_getHeader(elf).e_shstrndx;
-}
-
-
-/* Section header functions */
-static inline size_t
-elf64_getSectionNameOffset(elf_t *elf, size_t s)
-{
-    return elf64_getSectionTable(elf)[s].sh_name;
-}
-
-static inline uint32_t
-elf64_getSectionType(elf_t *file, size_t s)
-{
-    return elf64_getSectionTable(file)[s].sh_type;
-}
-
-static inline size_t
-elf64_getSectionFlags(elf_t *file, size_t s)
-{
-    return elf64_getSectionTable(file)[s].sh_flags;
-}
-
-static inline uintptr_t
-elf64_getSectionAddr(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_addr;
-}
-
-static inline size_t
-elf64_getSectionOffset(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_offset;
-}
-
-static inline size_t
-elf64_getSectionSize(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_size;
-}
-
-static inline uint32_t
-elf64_getSectionLink(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_link;
-}
-
-static inline uint32_t
-elf64_getSectionInfo(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_info;
-}
-
-static inline size_t
-elf64_getSectionAddrAlign(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_addralign;
-}
-
-static inline size_t
-elf64_getSectionEntrySize(elf_t *elf, size_t i)
-{
-    return elf64_getSectionTable(elf)[i].sh_entsize;
-}
-
-
-/* Program header functions */
-static inline uint32_t
-elf64_getProgramHeaderType(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_type;
-}
-
-static inline size_t
-elf64_getProgramHeaderOffset(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_offset;
-}
-
-static inline uintptr_t
-elf64_getProgramHeaderVaddr(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_vaddr;
-}
-
-static inline uintptr_t
-elf64_getProgramHeaderPaddr(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_paddr;
-}
-
-static inline size_t
-elf64_getProgramHeaderFileSize(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_filesz;
-}
-
-static inline size_t
-elf64_getProgramHeaderMemorySize(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_memsz;
-}
-
-static inline uint32_t
-elf64_getProgramHeaderFlags(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_flags;
-}
-
-static inline size_t
-elf64_getProgramHeaderAlign(elf_t *file, size_t ph)
-{
-    return elf64_getProgramHeaderTable(file)[ph].p_align;
+    return 0;
 }

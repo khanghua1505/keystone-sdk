@@ -2,10 +2,10 @@
 // Copyright (c) 2018, The Regents of the University of California (Regents).
 // All Rights Reserved. See LICENSE for license details.
 //------------------------------------------------------------------------------
-#include "edge_call.h"
+#include <keystone/edge/edge_call.h>
 
 #ifdef IO_SYSCALL_WRAPPING
-#include "edge_syscall.h"
+#include <keystone/edge/edge_syscall.h>
 #endif /*  IO_SYSCALL_WRAPPING */
 
 edgecallwrapper edge_call_table[MAX_EDGE_CALL];

@@ -4,8 +4,8 @@
 //------------------------------------------------------------------------------
 #include <sys/stat.h>
 #include <sys/mman.h>
-#include <keystone_user.h>
-#include "memory.h"
+#include <keystone/host/keystone_user.h>
+#include "keystone/host/memory.h"
 
 void SimulatedEnclaveMemory::init(int fd=0, vaddr_t phys_addr=0)
 {

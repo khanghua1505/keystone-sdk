@@ -2,7 +2,8 @@
 // Copyright (c) 2018, The Regents of the University of California (Regents).
 // All Rights Reserved. See LICENSE for license details.
 //------------------------------------------------------------------------------
-#include "syscall.h"
+
+#include <keystone/enclave/syscall.h>
 
 /* this implementes basic system calls for the enclave */
 

@@ -4,12 +4,11 @@
 //------------------------------------------------------------------------------
 #include <sys/stat.h>
 #include <sys/mman.h>
-#include <keystone_user.h>
-#include "keystone.h"
-#include "elffile.h"
-#include "keystone_user.h"
-#include "page.h"
-#include "hash_util.h"
+#include <keystone/host/keystone_user.h>
+#include "keystone/host/keystone.h"
+#include "keystone/host/elffile.h"
+#include "keystone/host/page.h"
+#include "keystone/host/hash_util.h"
 #include <math.h>
 
 Keystone::Keystone() {

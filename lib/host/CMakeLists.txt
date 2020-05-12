@@ -4,17 +4,17 @@ set(CFLAGS      "-Wall -Werror")
 set(LDFLAGS     "-static")
 
 set(SOURCE_FILES 
-        src/elf.cpp
-        src/elf32.cpp
-        src/elf64.cpp
-        src/elffile.cpp
-        src/keystone_device.cpp
-        src/keystone.cpp
-        src/memory.cpp
-        src/sha3.cpp
+        elf.cpp
+        elf32.cpp
+        elf64.cpp
+        elffile.cpp
+        keystone_device.cpp
+        keystone.cpp
+        memory.cpp
+        sha3.cpp
     )
     
-set(INCLUDE_DIRS include)
+set(INCLUDE_DIRS ${src_dir}/lib/inc)
 
 set(CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${CFLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LDFLAGS}")

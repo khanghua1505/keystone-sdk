@@ -1,7 +1,8 @@
-#include "edge_syscall.h"
+#include <keystone/edge/edge_syscall.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+
 // Special edge-call handler for syscall proxying
 void incoming_syscall(struct edge_call* edge_call){
 

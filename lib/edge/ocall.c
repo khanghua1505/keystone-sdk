@@ -24,28 +24,19 @@
  * MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  */
 
-#include <keystone/glibc/stdio.h>
-#include <keystone/glibc/stdint.h>
-#include <keystone/glibc/stddef.h>
-#include <keystone/glibc/string.h>
-#include <keystone/edge/ocall.h>
-#include <stdarg.h>
+#include <stdint.h>
+#include "string.h"
+#include "syscall.h"
+#include "edge_call.h"
+#include "ocall.h"
 
-int printf(char *fmt, ...)
+int ocall_print(char *str)
 {
-    int done;
-    va_list args;
-    static char buffer[1024];
-    
-    va_start(args, fmt);
-    done = vsnprintf(buffer, sizeof(buffer), fmt, args);
-    va_end(args);
-    
-    if (done != 0) {
-        return done;
-    }
-    
-    return ocall_print(buffer);
+  int ret;
+  ocall(OCALL_ID_PRINT, str, strlen(str), &ret, sizeof(int));
+  return ret;
 }
+
+
 
 

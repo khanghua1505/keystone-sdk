@@ -78,11 +78,11 @@
  * The construction, validity and performance of this licence is governed
  * by the laws in force in New South Wales, Australia.
  */
-#include <elf.h>
-#include <elf32.h>
-#include <elf64.h>
 #include <string.h>
 #include <stdio.h>
+#include <keystone/host/elf.h>
+#include <keystone/host/elf32.h>
+#include <keystone/host/elf64.h>
 
 /* ELF header functions */
 int
