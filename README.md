@@ -22,7 +22,7 @@ In order to run the test framework, do the following:
 
 ```bash
 mkdir build
-cmake .. -DOUTPUT_DIR=$(pwd)/../lib
+cmake -DOUTPUT_DIR=$(pwd)/../lib ..
 make
 make install
 ```
