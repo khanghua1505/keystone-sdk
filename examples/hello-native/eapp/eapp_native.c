@@ -6,13 +6,13 @@
 #include "string.h"
 #include "edge_call.h"
 #include <syscall.h>
+#include <stdio.h>
 
 #define OCALL_PRINT_STRING 1
 
 unsigned long ocall_print_string(char* string);
 
 int main(){
-
   ocall_print_string("Hello World");
 
   EAPP_RETURN(0);
